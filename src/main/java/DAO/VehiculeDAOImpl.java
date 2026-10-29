@@ -29,8 +29,7 @@ public class VehiculeDAOImpl implements VehiculeDAO{
                         date_mise_circulation + ", " +
                         kilometrage + ") " +
                 "VALUES (?, ? , ?, ?, ?)";
-        try {
-            PreparedStatement ps = DAOFactory.getInstance().getConnection().prepareStatement(query);
+        try(PreparedStatement ps = DAOFactory.getInstance().getConnection().prepareStatement(query)) {
             ps.setString(1,vehicule.getImmatriculation());
             ps.setString(2,vehicule.getMarque());
             ps.setString(3,vehicule.getModele());
@@ -52,9 +51,8 @@ public class VehiculeDAOImpl implements VehiculeDAO{
         String query = "" +
                 "SELECT * FROM " + table +
                 " WHERE " + this.id + " LIKE ?";
-        try {
+        try(PreparedStatement ps = DAOFactory.getInstance().getConnection().prepareStatement(query)) {
 
-            PreparedStatement ps = DAOFactory.getInstance().getConnection().prepareStatement(query);
             ps.setInt(1,id);
 
             ResultSet rs = ps.executeQuery();
@@ -81,15 +79,12 @@ public class VehiculeDAOImpl implements VehiculeDAO{
     @Override
     public Vehicule trouverParImmatriculation(String immat) {
         Vehicule vehicule = null;
-
         String query = "" +
                 "SELECT * FROM " + table +
                 " WHERE " + this.immatriculation + " LIKE ?";
-        try {
 
-            PreparedStatement ps = DAOFactory.getInstance().getConnection().prepareStatement(query);
+        try(PreparedStatement ps = DAOFactory.getInstance().getConnection().prepareStatement(query)) {
             ps.setString(1,immat);
-
             ResultSet rs = ps.executeQuery();
 
             while(rs.next()){
@@ -117,9 +112,9 @@ public class VehiculeDAOImpl implements VehiculeDAO{
         String query = "SELECT * FROM " + table;
         List<Vehicule> vehicules = new ArrayList<>();
 
-        try {
-            PreparedStatement ps = DAOFactory.getInstance().getConnection().prepareStatement(query);
+        try(PreparedStatement ps = DAOFactory.getInstance().getConnection().prepareStatement(query)) {
             ResultSet rs = ps.executeQuery();
+
             while(rs.next()){
                 int id = rs.getInt(this.id);
                 String immatriculation = rs.getString(this.immatriculation);
