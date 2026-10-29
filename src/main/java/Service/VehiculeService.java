@@ -8,6 +8,7 @@ import Modele.Vehicule;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -29,12 +30,10 @@ public class VehiculeService {
     }
 
     public void ajouterVehicule(Vehicule vehicule) {
-        flotte.ajouter(vehicule);                   // mise à jour immédiate en mémoire
-
-        // 2. Soumettre : l'écriture en base se fait en arrière-plan
+        flotte.ajouter(vehicule);
         executor.submit(() -> {
             try {
-                VehiculeDAO.creer(vehicule);
+                vehiculeDAO.creer(vehicule);
                 log.info("Véhicule enregistré : {}", vehicule.getImmatriculation());
             } catch (DAOExceptions e) {
                 log.error("Échec de l'enregistrement", e);
@@ -42,7 +41,14 @@ public class VehiculeService {
         });
     }
 
-    // 3. Arrêter : appelé par Main quand le gestionnaire quitte l'application
+    public List<Vehicule> afficherFlotte(){
+        return flotte.getVehicules();
+    }
+
+    /**
+     * Ferme l'executor, à appeler par le Main à la fermeture du programme.
+     * @throws InterruptedException
+     */
     public void fermer() throws InterruptedException {
         executor.shutdown();                                                // n'accepte plus de nouvelles tâches
         if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
