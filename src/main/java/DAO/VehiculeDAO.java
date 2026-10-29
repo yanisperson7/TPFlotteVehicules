@@ -12,5 +12,4 @@ public interface VehiculeDAO {
     List<Vehicule> lister();
     void modifier(Vehicule vehicule);
     void supprimer(int id);
-
 }
