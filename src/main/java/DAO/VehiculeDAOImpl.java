@@ -3,7 +3,10 @@ package DAO;
 import Modele.Vehicule;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class VehiculeDAOImpl implements VehiculeDAO{
@@ -54,7 +57,30 @@ public class VehiculeDAOImpl implements VehiculeDAO{
 
     @Override
     public List<Vehicule> lister() {
-        return List.of();
+        String query = "SELECT * FROM " + table;
+        List<Vehicule> vehicules = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = DAOFactory.getInstance().getConnection().prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                int id = rs.getInt(this.id);
+                String immatriculation = rs.getString(this.immatriculation);
+                String marque = rs.getString(this.marque);
+                String modele = rs.getString(this.modele);
+                LocalDate date_mise_circulation = rs.getDate(this.date_mise_circulation).toLocalDate();
+                int kilometrage = rs.getInt(this.kilometrage);
+
+                Vehicule vehicule = new Vehicule(id,immatriculation,marque,modele,date_mise_circulation,kilometrage);
+                vehicules.add(vehicule);
+            }
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }catch (ClassNotFoundException e){
+            System.out.println(e.getMessage());
+        }
+
+        return vehicules;
     }
 
     @Override
