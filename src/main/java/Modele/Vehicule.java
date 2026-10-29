@@ -1,14 +1,16 @@
 package Modele;
 
+import java.time.LocalDate;
+
 public class Vehicule {
     private int id;
     private String immatriculation;
     private String marque;
     private String modele;
-    private String date_mise_circulation;
+    private LocalDate date_mise_circulation;
     private int kilometrage;
 
-    public Vehicule(int id, String immatriculation, String marque, String modele, String date_mise_circulation, int kilometrage) {
+    public Vehicule(int id, String immatriculation, String marque, String modele, LocalDate date_mise_circulation, int kilometrage) {
         this.id = id;
         setImmatriculation(immatriculation);
         this.marque = marque;
@@ -51,11 +53,11 @@ public class Vehicule {
         this.modele = modele;
     }
 
-    public String getDate_mise_circulation() {
+    public LocalDate getDate_mise_circulation() {
         return date_mise_circulation;
     }
 
-    public void setDate_mise_circulation(String date_mise_circulation) {
+    public void setDate_mise_circulation(LocalDate date_mise_circulation) {
         this.date_mise_circulation = date_mise_circulation;
     }
 
