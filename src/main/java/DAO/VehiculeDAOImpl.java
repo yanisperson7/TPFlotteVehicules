@@ -137,7 +137,29 @@ public class VehiculeDAOImpl implements VehiculeDAO{
 
     @Override
     public void modifier(Vehicule vehicule) {
+        String query =
+                "UPDATE " + table
+                        + " SET "
+                        + immatriculation + " = ?, "
+                        + marque + " = ?, "
+                        + modele + " = ?, "
+                        + date_mise_circulation + " = ?, "
+                        + kilometrage + " = ?"
+                        + " WHERE " + this.id + " = ?";
+        try(PreparedStatement ps = DAOFactory.getInstance().getConnection().prepareStatement(query)) {
+            ps.setString(1,vehicule.getImmatriculation());
+            ps.setString(2,vehicule.getMarque());
+            ps.setString(3,vehicule.getModele());
+            ps.setDate(4,java.sql.Date.valueOf(vehicule.getDate_mise_circulation()));
+            ps.setInt(5,vehicule.getKilometrage());
+            ps.setInt(6,vehicule.getId());
 
+            ps.execute();
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
