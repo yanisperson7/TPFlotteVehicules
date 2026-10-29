@@ -14,11 +14,11 @@ public class Flotte {
     }
 
     public void retirer(Vehicule v) {
-        listeVehicules.add(v);
+        listeVehicules.remove(v);
     }
 
     public void ajouter(Vehicule v) {
-        listeVehicules.remove(v);
+        listeVehicules.add(v);
     }
 
     public void charger(List<Vehicule> vehicules){
