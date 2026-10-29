@@ -20,4 +20,8 @@ public class Flotte {
     public void ajouter(Vehicule v) {
         listeVehicules.remove(v);
     }
+
+    public void charger(List<Vehicule> vehicules){
+        this.listeVehicules = new ArrayList<>(vehicules);
+    }
 }
