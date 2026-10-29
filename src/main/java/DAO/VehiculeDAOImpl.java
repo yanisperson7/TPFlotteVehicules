@@ -164,6 +164,16 @@ public class VehiculeDAOImpl implements VehiculeDAO{
 
     @Override
     public void supprimer(int id) {
-
+        String query =
+                "DELETE FROM " + table +
+                " WHERE " + this.id + " = ?";
+        try(PreparedStatement ps = DAOFactory.getInstance().getConnection().prepareStatement(query)) {
+            ps.setInt(1,id);
+            ps.execute();
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
