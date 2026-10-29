@@ -47,7 +47,35 @@ public class VehiculeDAOImpl implements VehiculeDAO{
 
     @Override
     public Vehicule trouverParId(int id) {
-        return null;
+        Vehicule vehicule = null;
+
+        String query = "" +
+                "SELECT * FROM " + table +
+                " WHERE " + this.id + " LIKE ?";
+        try {
+
+            PreparedStatement ps = DAOFactory.getInstance().getConnection().prepareStatement(query);
+            ps.setInt(1,id);
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                String immatriculation = rs.getString(this.immatriculation);
+                String marque = rs.getString(this.marque);
+                String modele = rs.getString(this.modele);
+                LocalDate date_mise_circulation = rs.getDate(this.date_mise_circulation).toLocalDate();
+                int kilometrage = rs.getInt(this.kilometrage);
+
+                vehicule = new Vehicule(id,immatriculation,marque,modele,date_mise_circulation,kilometrage);
+            }
+
+        }catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }catch(ClassNotFoundException e){
+            System.out.println(e.getMessage());
+        }
+
+        return vehicule;
     }
 
     @Override
