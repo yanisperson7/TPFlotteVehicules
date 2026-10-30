@@ -9,7 +9,6 @@ import Modele.Vehicule;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -44,12 +43,6 @@ public class VehiculeService {
         });
     }
 
-    public List<Vehicule> afficherFlotte(){
-        List<Vehicule> flotte = new ArrayList<>(this.flotte.getVehicules());
-        if(flotte.isEmpty()) throw new RegleGestionException("Le flotte ne contient aucun véhicule");
-        return flotte;
-    }
-
     /**
      * Retire un véhicule de la flotte.
      * @param immat l'immatriculation du véhicule.
@@ -75,23 +68,11 @@ public class VehiculeService {
     }
 
     /**
-     * Retourne le véhicule correspondant à l'immatriculation.
-     * @param immat l'immatriculation du véhicule recherché.
-     * @return le véhicule correspondant.
-     * @throws RegleGestionException si l'immatriculation ne correspond à aucun véhicule.
-     */
-    public Vehicule rechercherParImmatriculation(String immat){
-        Vehicule vehicule = vehiculeDAO.trouverParImmatriculation(immat);
-        if (vehicule == null) throw new RegleGestionException("L'immatriculation ne correspond à aucun véhicule de la flotte");
-        return vehicule;
-    }
-
-    /**
      * Retourne la liste des véhicules triés par marque et modèle.
      * @return une liste des véhicules triés par marque et modèle
      */
     public List<Vehicule> trierParMarqueEtModele(){
-        List<Vehicule> vehicules = flotte.getVehicules();
+        List<Vehicule> vehicules = getFlotte();
 
         vehicules.sort(Comparator.comparing(Vehicule::getMarque)
                 .thenComparing(Vehicule::getModele));
@@ -104,7 +85,7 @@ public class VehiculeService {
      * @return une liste des véhicules triés par date de mise en circulation.
      */
     public List<Vehicule> trierParDateMiseCirculation(){
-        List<Vehicule> vehicules = flotte.getVehicules();
+        List<Vehicule> vehicules = getFlotte();
 
         vehicules.sort(Comparator.comparing(Vehicule::getDate_mise_circulation));
 
@@ -116,11 +97,36 @@ public class VehiculeService {
      * @return une liste des véhicules triés par kilométrage décroissant.
      */
     public List<Vehicule> trierParKmDecroissant(){
-        List<Vehicule> vehicules = flotte.getVehicules();
+        List<Vehicule> vehicules = getFlotte();
 
         vehicules.sort(Comparator.comparing(Vehicule::getKilometrage).reversed());
 
         return vehicules;
+    }
+
+
+
+    /**
+     * Retourne le véhicule correspondant à l'immatriculation.
+     * @param immat l'immatriculation du véhicule recherché.
+     * @return le véhicule correspondant.
+     * @throws RegleGestionException si l'immatriculation ne correspond à aucun véhicule.
+     */
+    public Vehicule rechercherParImmatriculation(String immat){
+        Vehicule vehicule = vehiculeDAO.trouverParImmatriculation(immat);
+        if (vehicule == null) throw new RegleGestionException("L'immatriculation ne correspond à aucun véhicule de la flotte");
+        return vehicule;
+    }
+
+    /**
+     * Retourne la flotte de véhicule.
+     * @return la liste des véhicules de la flotte.
+     * @throws RegleGestionException s'il n'y a aucun véhicule.
+     */
+    public List<Vehicule> getFlotte(){
+        List<Vehicule> flotte = this.flotte.getVehicules();
+        if(flotte.isEmpty()) throw new RegleGestionException("Le flotte ne contient aucun véhicule");
+        return flotte;
     }
 
     /**
