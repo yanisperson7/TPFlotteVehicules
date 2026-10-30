@@ -1,9 +1,11 @@
 import Controleur.AuthController;
 import Controleur.FlotteController;
+import Controleur.ReservationController;
 import DAO.*;
 import Exceptions.RegleGestionException;
 import Modele.Flotte;
 import Service.AuthService;
+import Service.ReservationService;
 import Service.VehiculeService;
 import Vue.MenuConsole;
 
@@ -13,9 +15,12 @@ public class Main {
 
         VehiculeDAO vehiculeDAO = new VehiculeDAOImpl();
         ReservationDAO reservationDAO = new ReservationDAOImpl();
+        SalarieDAO salarieDAO = new SalarieDAOImpl();
 
         VehiculeService vehiculeService = new VehiculeService(flotte,reservationDAO,vehiculeDAO);
+        ReservationService reservationService = new ReservationService(vehiculeDAO, reservationDAO, salarieDAO);
         FlotteController flotteController = new FlotteController(vehiculeService);
+        ReservationController reservationController = new ReservationController(reservationService);
         AuthService authService = new AuthService("user.json");
         AuthController authController = new AuthController(authService);
 
@@ -58,6 +63,9 @@ public class Main {
                 case 5: // Trier un véhicule
                     menuConsole.afficher(flotteController.trierFlotte(menuConsole.trierFlotte()));
                     break;
+
+                case 6: //Créer un salarié
+                    menuConsole.afficher(reservationController.creerSalarie(menuConsole.creerSalarie()));
 
             }
 

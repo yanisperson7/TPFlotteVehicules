@@ -1,5 +1,6 @@
 package Vue;
 
+import Modele.SalarieRecord;
 import Modele.UtilisateurRecord;
 import Modele.Vehicule;
 import Modele.VehiculeRecord;
@@ -115,6 +116,42 @@ public class MenuConsole {
 
         return choix;
     }
+
+    public SalarieRecord creerSalarie() {
+        System.out.println("CRÉATION D'UN SALARIÉ");
+
+        String matricule = saisieString("Matricule (6 chiffres) : ");
+        String nom = saisieString("Nom : ");
+        String prenom = saisieString("Prénom : ");
+
+        System.out.println("Récapitulatif");
+        System.out.println("  Matricule : " + matricule);
+        System.out.println("  Nom       : " + nom);
+        System.out.println("  Prénom    : " + prenom);
+
+        String confirmation = saisieString("Confirmer la création ? (o/n) : ");
+
+        if (!confirmation.equalsIgnoreCase("o")) {
+            System.out.println("Création annulée.");
+            return null;
+        }
+
+        return new SalarieRecord(matricule, nom, prenom);
+    }
+
+    /*public String enregistrerDepart() {
+        System.out.println("DÉPART D'UN VÉHICULE");
+
+        String matricule = saisieString("Matricule du salarié : ");
+        String nomPrenom = saisieString("Salarié : ");
+        String immat = saisieImmat("Immatriculation : ");
+
+        /*String matricule = saisieString("Matricule du salarié : ");
+        String immat = saisieImmat("Immatriculation : ");
+
+        return reservationController.enregistrerDepart(matricule, immat);
+
+    }*/
 
     // UTIL
     public LocalDate saisieDate(String msg) {
