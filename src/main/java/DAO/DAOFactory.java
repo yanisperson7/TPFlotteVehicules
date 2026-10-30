@@ -1,6 +1,7 @@
 package DAO;
 
 import Exceptions.DAOExceptions;
+import Modele.Vehicule;
 
 import java.io.InputStream;
 import java.sql.Connection;
@@ -44,5 +45,17 @@ public class DAOFactory {
         } catch (Exception e) {
             throw new DAOExceptions("Connexion impossible");
         }
+    }
+
+    public VehiculeDAO getVehiculeDAO() {
+        return new VehiculeDAOImpl();
+    }
+
+    public ReservationDAO getReservationDAO() {
+        return new ReservationDAOImpl();
+    }
+
+    public SalarieDAO getSalarieDAO() {
+        return new SalarieDAOImpl();
     }
 }
