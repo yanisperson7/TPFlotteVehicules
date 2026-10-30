@@ -1,9 +1,6 @@
 package Vue;
 
-import Modele.SalarieRecord;
-import Modele.UtilisateurRecord;
-import Modele.Vehicule;
-import Modele.VehiculeRecord;
+import Modele.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -139,19 +136,49 @@ public class MenuConsole {
         return new SalarieRecord(matricule, nom, prenom);
     }
 
-    /*public String enregistrerDepart() {
+    public String[] enregistrerDepart() {
         System.out.println("DÉPART D'UN VÉHICULE");
 
         String matricule = saisieString("Matricule du salarié : ");
-        String nomPrenom = saisieString("Salarié : ");
-        String immat = saisieImmat("Immatriculation : ");
+        String immat = saisieImmat("Immatriculation (AB-123-CD) : ");
 
-        /*String matricule = saisieString("Matricule du salarié : ");
-        String immat = saisieImmat("Immatriculation : ");
+        String[] infos = { matricule, immat };
+        return infos;
 
-        return reservationController.enregistrerDepart(matricule, immat);
+    }
 
-    }*/
+    public String[] enregistrerRetour() {
+        System.out.println("RETOUR D'UN VÉHICULE");
+
+        String immat = saisieImmat("Immatriculation (AB-123-CD) : ");
+        int kilometrage = saisieInt("Kilométrage au compteur : ");
+
+        String[] infos = { immat, String.valueOf(kilometrage) };
+        return infos;
+
+    }
+
+    public void vehiculesEnDeplacement(List<Reservation> reservations) {
+        System.out.println("VÉHICULES EN DÉPLACEMENT");
+        if (reservations == null || reservations.isEmpty()) {
+            System.out.println("Aucun véhicule actuellement en déplacement.");
+            return;
+        }
+
+        System.out.println("-----------------------------------------------------------------");
+        System.out.printf("%-15s | %-15s | %-20s | %-20s%n", "Immatriculation", "Matricule", "Salarié", "Date de départ");
+        System.out.println("-----------------------------------------------------------------");
+
+        for (Reservation r : reservations) {
+            String nomComplet = r.getSalarie().getPrenom() + " " + r.getSalarie().getNom();
+            System.out.printf("%-15s | %-15s | %-20s | %-20s%n",
+                    r.getVehicule().getImmatriculation(),
+                    r.getSalarie().getMatricule(),
+                    nomComplet,
+                    r.getDateDepart());
+        }
+        System.out.println("-----------------------------------------------------------------");
+    }
 
     // UTIL
     public LocalDate saisieDate(String msg) {
@@ -229,18 +256,3 @@ public class MenuConsole {
         return saisie;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
