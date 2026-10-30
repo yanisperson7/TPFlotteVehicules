@@ -1,5 +1,6 @@
 package Vue;
 
+import Modele.UtilisateurRecord;
 import Modele.Vehicule;
 import Modele.VehiculeRecord;
 
@@ -13,6 +14,19 @@ import java.util.Scanner;
 
 public class MenuConsole {
     private Scanner scanner = new Scanner(System.in);
+
+    public void demarrage(){
+        System.out.println("=============================================");
+        System.out.println("  GESTION DE LA FLOTTE DE VÉHICULES");
+        System.out.println("=============================================");
+    }
+
+    public UtilisateurRecord connexion(){
+        String utilisateur = saisieString("Login : ");
+        String motDePasse = saisieString("Mot de passe : ");
+
+        return new UtilisateurRecord(utilisateur,motDePasse);
+    }
 
     public int afficherMenu(){
         System.out.println("\n============== MENU PRINCIPAL ==============\n");
