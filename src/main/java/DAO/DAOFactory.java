@@ -1,6 +1,7 @@
 package DAO;
 
 import Exceptions.DAOExceptions;
+import Modele.Vehicule;
 
 import java.io.InputStream;
 import java.sql.Connection;
@@ -46,7 +47,15 @@ public class DAOFactory {
         }
     }
 
+    public VehiculeDAO getVehiculeDAO() {
+        return new VehiculeDAOImpl();
+    }
+
     public ReservationDAO getReservationDAO() {
         return new ReservationDAOImpl();
+    }
+
+    public SalarieDAO getSalarieDAO() {
+        return new SalarieDAOImpl();
     }
 }
