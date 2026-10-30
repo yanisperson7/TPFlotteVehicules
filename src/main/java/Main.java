@@ -1,22 +1,39 @@
+import Controleur.AuthController;
 import Controleur.FlotteController;
 import DAO.*;
+import Exceptions.RegleGestionException;
 import Modele.Flotte;
-import Modele.VehiculeRecord;
+import Service.AuthService;
 import Service.VehiculeService;
 import Vue.MenuConsole;
 
-import java.sql.Connection;
-import java.io.IOException;
-
 public class Main {
     public static void main(String[] args) {
-        MenuConsole menuConsole = new MenuConsole();
         Flotte flotte = new Flotte();
-        ReservationDAO reservationDAO = new ReservationDAOImpl();
+
         VehiculeDAO vehiculeDAO = new VehiculeDAOImpl();
-        flotte = new Flotte();
+        ReservationDAO reservationDAO = new ReservationDAOImpl();
+
         VehiculeService vehiculeService = new VehiculeService(flotte,reservationDAO,vehiculeDAO);
         FlotteController flotteController = new FlotteController(vehiculeService);
+        AuthService authService = new AuthService("user.json");
+        AuthController authController = new AuthController(authService);
+
+        MenuConsole menuConsole = new MenuConsole();
+
+        menuConsole.demarrage();
+
+        boolean login=false;
+
+        try {
+            while(!login){
+                login = authController.Login(menuConsole.connexion());
+                if(!login) menuConsole.afficher(authController.afficherTentativesRestantes());
+            }
+        }catch (RegleGestionException e){
+            menuConsole.afficher(e.getMessage());
+            return;
+        }
 
         int choix = menuConsole.afficherMenu();
         while(choix != 0){
@@ -47,6 +64,8 @@ public class Main {
             choix = menuConsole.afficherMenu();
 
         }
+
+
 
     }
 }
