@@ -3,11 +3,14 @@ package Service;
 import DAO.ReservationDAO;
 import DAO.VehiculeDAO;
 import Exceptions.DAOExceptions;
+import Exceptions.RegleGestionException;
 import Modele.Flotte;
 import Modele.Vehicule;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,7 +45,82 @@ public class VehiculeService {
     }
 
     public List<Vehicule> afficherFlotte(){
-        return flotte.getVehicules();
+        List<Vehicule> flotte = new ArrayList<>(this.flotte.getVehicules());
+        if(flotte.isEmpty()) throw new RegleGestionException("Le flotte ne contient aucun véhicule");
+        return flotte;
+    }
+
+    /**
+     * Retire un véhicule de la flotte.
+     * @param immat l'immatriculation du véhicule.
+     * @throws RegleGestionException si l'immatriculation ne correspond à aucun véhicule.
+     */
+    public void retirerVehicule(String immat){
+        // Vérifier que le véhicule existe
+        Vehicule vehicule = rechercherParImmatriculation(immat);
+
+        // Vérifier que le véhicule n'a pas de réservation en cours
+        if(reservationDAO.estEnDeplacement(vehicule.getId())) throw new RegleGestionException("Impossible de retirer le véhicule : réservation en cours");
+
+        // Execution du retrait
+        flotte.retirer(vehicule);
+        executor.submit(() -> {
+            try {
+                vehiculeDAO.supprimer(vehicule.getId());
+                log.info("Véhicule retiré : {}", vehicule.getImmatriculation());
+            } catch (DAOExceptions e) {
+                log.error("Échec du retrait du véhicule", e);
+            }
+        });
+    }
+
+    /**
+     * Retourne le véhicule correspondant à l'immatriculation.
+     * @param immat l'immatriculation du véhicule recherché.
+     * @return le véhicule correspondant.
+     * @throws RegleGestionException si l'immatriculation ne correspond à aucun véhicule.
+     */
+    public Vehicule rechercherParImmatriculation(String immat){
+        Vehicule vehicule = vehiculeDAO.trouverParImmatriculation(immat);
+        if (vehicule == null) throw new RegleGestionException("L'immatriculation ne correspond à aucun véhicule de la flotte");
+        return vehicule;
+    }
+
+    /**
+     * Retourne la liste des véhicules triés par marque et modèle.
+     * @return une liste des véhicules triés par marque et modèle
+     */
+    public List<Vehicule> trierParMarqueEtModele(){
+        List<Vehicule> vehicules = flotte.getVehicules();
+
+        vehicules.sort(Comparator.comparing(Vehicule::getMarque)
+                .thenComparing(Vehicule::getModele));
+
+        return vehicules;
+    }
+
+    /**
+     * Retournes la liste des véhicules triés par date de mise en circulation.
+     * @return une liste des véhicules triés par date de mise en circulation.
+     */
+    public List<Vehicule> trierParDateMiseCirculation(){
+        List<Vehicule> vehicules = flotte.getVehicules();
+
+        vehicules.sort(Comparator.comparing(Vehicule::getDate_mise_circulation));
+
+        return vehicules;
+    }
+
+    /**
+     * Retournes la liste des véhicules triés par kilométrage décroissant.
+     * @return une liste des véhicules triés par kilométrage décroissant.
+     */
+    public List<Vehicule> trierParKmDecroissant(){
+        List<Vehicule> vehicules = flotte.getVehicules();
+
+        vehicules.sort(Comparator.comparing(Vehicule::getKilometrage).reversed());
+
+        return vehicules;
     }
 
     /**
