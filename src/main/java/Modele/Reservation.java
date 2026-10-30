@@ -9,19 +9,20 @@ public class Reservation {
     private Vehicule vehicule;
     private Timestamp dateDepart;
     private Timestamp dateRetour;
-    private int kmRetour;
+    private Integer kmRetour;
 
-    public Reservation(int id, Salarie salarie, Vehicule vehicule, Timestamp dateDepart) {
+    public Reservation(int id, Salarie salarie, Vehicule vehicule,
+                       Timestamp dateDepart, Timestamp dateRetour, Integer kmRetour) {
         this.id = id;
         this.salarie = salarie;
         this.vehicule = vehicule;
         this.dateDepart = dateDepart;
-    }
-
-    public Reservation(int id, Timestamp dateRetour, int kmRetour) {
-        this.id = id;
         this.dateRetour = dateRetour;
         this.kmRetour = kmRetour;
+    }
+
+    public Reservation(Salarie salarie, Vehicule vehicule, Timestamp dateDepart) {
+        this(0, salarie, vehicule, dateDepart, null, null);
     }
 
     public int getId() {

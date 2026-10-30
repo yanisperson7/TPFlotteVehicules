@@ -2,7 +2,7 @@ package DAO;
 
 import Modele.Reservation;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface ReservationDAO {
