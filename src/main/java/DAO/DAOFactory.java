@@ -45,4 +45,8 @@ public class DAOFactory {
             throw new DAOExceptions("Connexion impossible");
         }
     }
+
+    public ReservationDAO getReservationDAO() {
+        return new ReservationDAOImpl();
+    }
 }
