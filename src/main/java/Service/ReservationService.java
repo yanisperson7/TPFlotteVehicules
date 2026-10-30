@@ -27,6 +27,15 @@ public class ReservationService {
         this.salarieDAO = salarieDAO;
     }
 
+    private HistoriqueReservations<Salarie, Timestamp, Reservation> trouverHistorique(String matricule) {
+        for (HistoriqueReservations<Salarie, Timestamp, Reservation> h : historiques) {
+            if (h.getSalarie().getMatricule().equals(matricule)) {
+                return h;
+            }
+        }
+        return null;
+    }
+
     public void creerSalarie(Salarie salarie) {
         // Règles de gestion
         if (salarieDAO.trouverParMatricule(salarie.getMatricule()) != null) {
@@ -119,14 +128,5 @@ public class ReservationService {
             }
             h.ajouter(r.getDateDepart(), r);
         }
-    }
-
-    private HistoriqueReservations<Salarie, Timestamp, Reservation> trouverHistorique(String matricule) {
-        for (HistoriqueReservations<Salarie, Timestamp, Reservation> h : historiques) {
-            if (h.getSalarie().getMatricule().equals(matricule)) {
-                return h;
-            }
-        }
-        return null;
     }
 }
