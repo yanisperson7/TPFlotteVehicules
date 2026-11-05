@@ -129,6 +129,10 @@ public class VehiculeService {
         return flotte;
     }
 
+    public Boolean estEnDeplacement(int vehiculeId){
+        return reservationDAO.estEnDeplacement(vehiculeId);
+    }
+
     /**
      * Ferme l'executor, à appeler par le Main à la fermeture du programme.
      * @throws InterruptedException
