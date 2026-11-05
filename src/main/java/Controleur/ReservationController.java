@@ -19,6 +19,10 @@ public class ReservationController {
     }
 
     public String creerSalarie(SalarieRecord salarieRecord) {
+        if (salarieRecord == null) {
+            return "Création annulée : aucune donnée n'a été transmise.";
+        }
+
         try {
             Salarie salarie = new Salarie(
                     salarieRecord.matricule(),

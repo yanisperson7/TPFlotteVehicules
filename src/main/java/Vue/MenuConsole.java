@@ -1,10 +1,8 @@
 package Vue;
 
-import Modele.SalarieRecord;
-import Modele.UtilisateurRecord;
-import Modele.Vehicule;
-import Modele.VehiculeRecord;
+import Modele.*;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -139,19 +137,77 @@ public class MenuConsole {
         return new SalarieRecord(matricule, nom, prenom);
     }
 
-    /*public String enregistrerDepart() {
+    public String[] enregistrerDepart() {
         System.out.println("DÉPART D'UN VÉHICULE");
 
         String matricule = saisieString("Matricule du salarié : ");
-        String nomPrenom = saisieString("Salarié : ");
-        String immat = saisieImmat("Immatriculation : ");
+        String immat = saisieImmat("Immatriculation (AB-123-CD) : ");
 
-        /*String matricule = saisieString("Matricule du salarié : ");
-        String immat = saisieImmat("Immatriculation : ");
+        String[] infos = { matricule, immat };
+        return infos;
 
-        return reservationController.enregistrerDepart(matricule, immat);
+    }
 
-    }*/
+    public String[] enregistrerRetour() {
+        System.out.println("RETOUR D'UN VÉHICULE");
+
+        String immat = saisieImmat("Immatriculation (AB-123-CD) : ");
+        int kilometrage = saisieInt("Kilométrage au compteur : ");
+
+        String[] infos = { immat, String.valueOf(kilometrage) };
+        return infos;
+
+    }
+
+    public void vehiculesEnDeplacement(List<Reservation> reservations) {
+        System.out.println("VÉHICULES EN DÉPLACEMENT");
+        if (reservations == null || reservations.isEmpty()) {
+            System.out.println("Aucun véhicule actuellement en déplacement.");
+            return;
+        }
+
+        System.out.println("-----------------------------------------------------------------");
+        System.out.printf("%-15s | %-15s | %-20s | %-20s%n", "Immatriculation", "Matricule", "Salarié", "Date de départ");
+        System.out.println("-----------------------------------------------------------------");
+
+        for (Reservation r : reservations) {
+            String nomComplet = r.getSalarie().getPrenom() + " " + r.getSalarie().getNom();
+            System.out.printf("%-15s | %-15s | %-20s | %-20s%n",
+                    r.getVehicule().getImmatriculation(),
+                    r.getSalarie().getMatricule(),
+                    nomComplet,
+                    r.getDateDepart());
+        }
+        System.out.println("-----------------------------------------------------------------");
+    }
+
+    public String historiqueSalarie() {
+        System.out.println("HISTORIQUE D'UN SALARIÉ");
+        return saisieString("Matricule : ");
+    }
+
+    public void afficherHistorique(HistoriqueReservations<Salarie, Timestamp, Reservation> historique) {
+        if (historique == null) {
+            System.out.println("salarié inconnu.");
+            return;
+        }
+
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        Salarie s = historique.getSalarie();
+        System.out.println("HISTORIQUE - " + s.getPrenom() + " " + s.getNom() + " (" + s.getMatricule() + ")");
+
+        for (Reservation r : historique.getReservations().values()) {
+            String depart = r.getDateDepart().toLocalDateTime().format(f);
+            String retour;
+            if (r.estEnCours()) {
+                retour = "en cours";
+            } else {
+                retour = r.getDateRetour().toLocalDateTime().format(f);
+            }
+            System.out.printf("%s   ->   %s    %-10s   %s %s%n", depart, retour, r.getVehicule().getImmatriculation(), r.getVehicule().getMarque(), r.getVehicule().getModele());
+        }
+    }
 
     // UTIL
     public LocalDate saisieDate(String msg) {
@@ -229,18 +285,3 @@ public class MenuConsole {
         return saisie;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

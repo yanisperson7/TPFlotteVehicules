@@ -26,5 +26,3 @@ public class HistoriqueReservations<S, K, V> {
         return reservations;
     }
 }
-
-//

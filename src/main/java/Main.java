@@ -4,10 +4,14 @@ import Controleur.ReservationController;
 import DAO.*;
 import Exceptions.RegleGestionException;
 import Modele.Flotte;
+import Modele.Reservation;
 import Service.AuthService;
 import Service.ReservationService;
 import Service.VehiculeService;
 import Vue.MenuConsole;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -64,8 +68,30 @@ public class Main {
                     menuConsole.afficher(flotteController.trierFlotte(menuConsole.trierFlotte()));
                     break;
 
-                case 6: //Créer un salarié
+                case 6: // Créer un salarié
                     menuConsole.afficher(reservationController.creerSalarie(menuConsole.creerSalarie()));
+                    break;
+
+                case 7: // Enregistrer un départ
+                    String[] infosDepart = menuConsole.enregistrerDepart();
+                    String resultatDepart = reservationController.enregistrerDepart(infosDepart[0], infosDepart[1]);
+                    menuConsole.afficher(resultatDepart);
+                    break;
+
+                case 8: // Enregistrer un retour
+                    String[] infosRetour = menuConsole.enregistrerRetour();
+                    String resultatRetour = reservationController.enregistrerRetour(infosRetour[0], Integer.parseInt(infosRetour[1]));
+                    menuConsole.afficher(resultatRetour);
+                    break;
+
+                case 9: // Véhicules en déplacement
+                    List<Reservation> enDeplacement = reservationController.vehiculeEnDeplacement();
+                    menuConsole.vehiculesEnDeplacement(enDeplacement);
+                    break;
+
+                case 10: // Historique d'un salarié
+                    menuConsole.afficherHistorique(reservationController.historiqueSalarie(menuConsole.historiqueSalarie()));
+                    break;
 
             }
 
