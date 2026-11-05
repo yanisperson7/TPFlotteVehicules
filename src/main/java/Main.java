@@ -10,6 +10,7 @@ import Service.ReservationService;
 import Service.VehiculeService;
 import Vue.MenuConsole;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public class Main {
@@ -86,6 +87,10 @@ public class Main {
                 case 9: // Véhicules en déplacement
                     List<Reservation> enDeplacement = reservationController.vehiculeEnDeplacement();
                     menuConsole.vehiculesEnDeplacement(enDeplacement);
+                    break;
+
+                case 10: // Historique d'un salarié
+                    menuConsole.afficherHistorique(reservationController.historiqueSalarie(menuConsole.historiqueSalarie()));
                     break;
 
             }

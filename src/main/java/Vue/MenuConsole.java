@@ -2,6 +2,7 @@ package Vue;
 
 import Modele.*;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -178,6 +179,34 @@ public class MenuConsole {
                     r.getDateDepart());
         }
         System.out.println("-----------------------------------------------------------------");
+    }
+
+    public String historiqueSalarie() {
+        System.out.println("HISTORIQUE D'UN SALARIÉ");
+        return saisieString("Matricule : ");
+    }
+
+    public void afficherHistorique(HistoriqueReservations<Salarie, Timestamp, Reservation> historique) {
+        if (historique == null) {
+            System.out.println("salarié inconnu.");
+            return;
+        }
+
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        Salarie s = historique.getSalarie();
+        System.out.println("HISTORIQUE - " + s.getPrenom() + " " + s.getNom() + " (" + s.getMatricule() + ")");
+
+        for (Reservation r : historique.getReservations().values()) {
+            String depart = r.getDateDepart().toLocalDateTime().format(f);
+            String retour;
+            if (r.estEnCours()) {
+                retour = "en cours";
+            } else {
+                retour = r.getDateRetour().toLocalDateTime().format(f);
+            }
+            System.out.printf("%s   ->   %s    %-10s   %s %s%n", depart, retour, r.getVehicule().getImmatriculation(), r.getVehicule().getMarque(), r.getVehicule().getModele());
+        }
     }
 
     // UTIL
