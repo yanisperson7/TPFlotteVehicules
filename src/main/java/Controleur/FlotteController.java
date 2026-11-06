@@ -62,11 +62,11 @@ public class FlotteController {
     public String retirerVehicule(String immat){
         try {
             vehiculeService.retirerVehicule(immat);
+            return "Le véhicule a été retiré";
         }catch (RegleGestionException e){
             System.out.println(e.getMessage());
         }
-
-        return "Le véhicule a été retiré";
+        return "Echec lors du retrait du véhicule";
     }
 
     public  String rechercherVehicule(String immat){
