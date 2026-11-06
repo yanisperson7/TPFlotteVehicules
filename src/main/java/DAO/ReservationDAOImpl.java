@@ -5,7 +5,6 @@ import Modele.Salarie;
 import Modele.Vehicule;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -218,6 +217,46 @@ public class ReservationDAOImpl implements ReservationDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException("Erreur lister : " + e.getMessage(), e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Reservation trouverDerniereParVehicule(int vehiculeId) {
+        String query = "SELECT r.id AS id_reservation, r.date_depart, r.date_retour, r.km_retour," +
+                " s.matricule, s.nom, s.prenom," +
+                " v.id AS id_vehicule, v.immatriculation, v.marque, v.modele," +
+                " v.date_mise_circulation, v.kilometrage" +
+                " FROM " + this.tableReservation + " r" +
+                " JOIN salarie s ON r." + this.matriculeCOL + " = s.matricule" +
+                " JOIN vehicule v ON r." + this.idVehiculeCOL + " = v.id" +
+                " WHERE r." + this.idVehiculeCOL + " = ? AND r.date_retour IS NULL" +
+                " ORDER BY r.date_depart DESC" +
+                " LIMIT 1";
+
+        try(PreparedStatement ps = DAOFactory.getInstance().getConnection().prepareStatement(query)){
+            ps.setInt(1,vehiculeId);
+            ResultSet rs = ps.executeQuery();
+            if (!rs.next()) {
+                return null;
+            }
+            Salarie s = new Salarie(rs.getString("matricule"),
+                    rs.getString("nom"),
+                    rs.getString("prenom"));
+            Vehicule v = new Vehicule(rs.getInt("id_vehicule"),
+                    rs.getString("immatriculation"),
+                    rs.getString("marque"),
+                    rs.getString("modele"),
+                    rs.getDate("date_mise_circulation").toLocalDate(),
+                    rs.getInt("kilometrage"));
+            Reservation r = new Reservation(rs.getInt("id_reservation"), s, v,
+                    rs.getTimestamp("date_depart"),
+                    rs.getTimestamp("date_retour"),
+                    rs.getInt("km_retour"));
+            return r;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

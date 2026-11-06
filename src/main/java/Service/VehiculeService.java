@@ -5,6 +5,7 @@ import DAO.VehiculeDAO;
 import Exceptions.DAOExceptions;
 import Exceptions.RegleGestionException;
 import Modele.Flotte;
+import Modele.Reservation;
 import Modele.Vehicule;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -142,5 +143,9 @@ public class VehiculeService {
         if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
             executor.shutdownNow();                                         // force l'arrêt au bout de 10s
         }
+    }
+
+    public Reservation getReservationEncours(int id) {
+        return reservationDAO.trouverDerniereParVehicule(id);
     }
 }
