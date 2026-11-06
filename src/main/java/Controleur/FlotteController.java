@@ -1,10 +1,13 @@
 package Controleur;
 
 import Exceptions.RegleGestionException;
+import Modele.Reservation;
+import Modele.Salarie;
 import Modele.Vehicule;
 import Modele.VehiculeRecord;
 import Service.VehiculeService;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,10 +72,24 @@ public class FlotteController {
     public  String rechercherVehicule(String immat){
         try {
             String res = "";
+            String etat = "";
             Vehicule vehicule = vehiculeService.rechercherParImmatriculation(immat);
+            if(vehiculeService.estEnDeplacement(vehicule.getId())){
+                Reservation reservation     = vehiculeService.getReservationEncours(vehicule.getId());
+                Salarie salarie             = reservation.getSalarie();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                String depart               = reservation.getDateDepart().toLocalDateTime().format(formatter);
+                String prenom               = salarie.getPrenom();
+                String nom                  = salarie.getNom();
+                String matricule            = salarie.getMatricule();
+
+                etat = "Etat : en déplacement depuis le " + depart + " avec " + prenom +
+                        " " + nom + " " + "(" + matricule + ")";
+            }
+            else etat="Etat : Disponible";
             res += vehicule.getImmatriculation() + " " + vehicule.getMarque() + " " + vehicule.getModele() + " " +
                     " Mise en circulation depuis le " + vehicule.getDate_mise_circulation() + ", " + vehicule.getKilometrage() + " km\n";
-            res += "Etat : ...";
+            res += etat;
             return res;
         }catch (RegleGestionException e){
             return e.getMessage();

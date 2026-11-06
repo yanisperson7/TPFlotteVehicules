@@ -13,4 +13,5 @@ public interface ReservationDAO {
     List<Reservation> listerEnCours();
     List<Reservation> listerParSalarie(String matricule);
     List<Reservation> lister();
+    Reservation trouverDerniereParVehicule(int vehiculeId);
 }
